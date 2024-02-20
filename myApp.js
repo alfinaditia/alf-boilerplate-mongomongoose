@@ -1,22 +1,74 @@
-require('dotenv').config();
+require("dotenv").config();
+//#1
+let uri =
+  "mongodb+srv://alfinaditia:" +
+  process.env.PW +
+  "@freecodecamp.hxxdwff.mongodb.net/db1?retryWrites=true&w=majority";
+let mongoose = require("mongoose");
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
+//#2
+let personSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  age: Number,
+  favoriteFoods: [String],
+});
 
-let Person;
+let Person = mongoose.model("Person", personSchema);
+/*let dave = new Person({ name: "Dave", age: 39, favoriteFoods: ["Pizza"] });
+console.log(dave);*/
 
+//#3
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  let alfin = new Person({
+    name: "alfin",
+    age: 25,
+    favoriteFoods: ["hamburger"],
+  });
+
+  alfin.save((err, data) => {
+    if (err) {
+      return console.log(err);
+    } else {
+      done(null, data);
+    }
+  });
 };
+
+//#4
+let arrayOfPeople = [
+  { name: "Alice", age: 21, favoriteFoods: ["pizza", "sushi"] },
+  { name: "Max", age: 34, favoriteFoods: ["gado", "sushi"] },
+];
 
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  Person.create(arrayOfPeople, (err, createdPeople) => {
+    if (err) {
+      return console.log(err);
+    } else {
+      done(null, createdPeople);
+    }
+  });
 };
-
+//#6
 const findPeopleByName = (personName, done) => {
-  done(null /*, data*/);
+  Person.find({ name: personName }, (err, data) => {
+    if (err) {
+      return console.log(err);
+    } else {
+      done(null, data);
+    }
+  });
 };
-
+//#7
 const findOneByFood = (food, done) => {
-  done(null /*, data*/);
+  Person.findOne({ favoriteFoods: { $all: [food] } }, (err, data) => {
+    if (err) {
+      return console.log(err);
+    } else {
+      done(null, data);
+    }
+  });
 };
 
 const findPersonById = (personId, done) => {
